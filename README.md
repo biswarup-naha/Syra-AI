@@ -1,159 +1,97 @@
-# Turborepo starter
+# Syra AI: Autonomous Interview & Talent Platform
 
-This Turborepo starter is maintained by the Turborepo core team.
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
-## Using this example
+An end-to-end, high-performance platform designed to automate technical and behavioral interviews using advanced AI. Inspired by autonomous talent networks like Mercor, this system connects specialized professionals with recruiters through a seamless, real-time AI interviewing pipeline.
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
-```
+## 📖 Table of Contents
 
-## What's inside?
+- [Overview](#-overview)
+- [System Architecture](#-system-architecture)
+- [The AI Pipeline (The "Harder Bits")](#-the-ai-pipeline-the-harder-bits)
+- [Tech Stack](#-tech-stack)
+- [Getting Started](#-getting-started)
+- [Environment Variables](#-environment-variables)
+- [Contributing](#-contributing)
 
-This Turborepo includes the following packages/apps:
+---
 
-### Apps and Packages
+## 🚀 Overview
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+The platform consists of three primary user-facing interfaces, backed by a complex AI engine and a robust data ingestion layer:
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+1. **Talent Website:** A public-facing portal where candidates can explore specialized domain roles (e.g., AI, Biotech, Law) and view transparent, standardized compensation rates.
+2. **Live Interviewing Platform:** A real-time environment where candidates upload resumes, get instantly parsed, and undergo a dynamic video interview with an interactive AI avatar.
+3. **Recruiter Dashboard:** A secure, categorized hub for hiring managers to review recorded interviews and read AI-generated candidate evaluations and summaries.
 
-### Utilities
+---
 
-This Turborepo has some additional tools already setup for you:
+## 🏗️ System Architecture
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+### Web Interfaces
 
-### Build
+* **Talent Portal:** Dynamic role discovery and application gateway.
+- **Recruiter Portal:** Dashboard for evaluating candidate pipeline and interview metrics.
+- **Interview Client:** WebRTC-enabled frontend handling bidirectional, low-latency audio/video streaming.
 
-To build all apps and packages, run the following command:
+### 🛡️ Data & Ingestion (Proxy Layer)
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+To build comprehensive candidate profiles, the platform interfaces with external networks.
+- **External Profile Fetching:** Enriches candidate data by intelligently scraping or requesting public profile data (e.g., LinkedIn, X.com).
+- **Rate Limit Management:** To mitigate strict API limits and IP bans, all outbound enrichment requests are routed through a distributed **Proxy Layer** utilizing residential rotating proxies.
 
-```sh
-cd my-turborepo
-turbo build
-```
+---
 
-Without global `turbo`, use your package manager:
+## 🧠 The AI Pipeline (The "Harder Bits")
 
-```sh
-cd my-turborepo
-npx turbo build
-bun dlx turbo build
-bun exec turbo build
-```
+The core engineering challenge of this project is maintaining a **sub-second latency loop** (~800-1000ms) to ensure the AI conversation feels as natural as human interaction.
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+1. **Resume Parsing:** NLP/Document Intelligence extracts core skills and experiences from PDFs/Word docs to dynamically prompt the LLM for tailored interview questioning.
+2. **WebRTC Integration:** Facilitates ultra-low-latency peer-to-peer or server-relayed media connections.
+3. **SST (Speech-to-Text):** Fast, streaming transcription of candidate audio into text.
+4. **SLM (Small Language Model):** An optimized LLM (e.g., Llama-3-8B) deployed for rapid inference, contextual understanding, and response generation.
+5. **TTS (Text-to-Speech):** Converts the SLM output back into high-fidelity, human-like audio.
+6. **Real-Time Video Generation:** Syncs the TTS audio output with a visual avatar, mapping lip-syncing and micro-expressions dynamically.
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+---
 
-```sh
-turbo build --filter=docs
-```
+## 🛠️ Tech Stack
 
-Without global `turbo`:
+**Frontend**
+- ![React](https://img.shields.io/badge/react-%2320232a.svg?style=flat&logo=react&logoColor=%2361DAFB) React / Next.js
+- ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=flat&logo=tailwind-css&logoColor=white) Tailwind CSS
+- WebRTC API
 
-```sh
-npx turbo build --filter=docs
-bun exec turbo build --filter=docs
-bun exec turbo build --filter=docs
-```
+**Backend & Infrastructure**
+- ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=flat&logo=node.js&logoColor=white) Node.js (Express) 
+- ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=flat&logo=postgresql&logoColor=white) PostgreSQL & Vector DB (for embeddings)
+- WebRTC SFU (LiveKit / Mediasoup)
+- **Proxy Management:** Proxyman / ScrapingBee
 
-### Develop
+**AI / ML Pipeline**
+- **SST:** Deepgram / Whisper Streaming
+- **SLM Serving:** vLLM / Ollama
+- **TTS:** ElevenLabs / PlayHT
 
-To develop all apps and packages, run the following command:
+---
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+## 💻 Getting Started
 
-```sh
-cd my-turborepo
-turbo dev
-```
+### Prerequisites
 
-Without global `turbo`, use your package manager:
+* Node.js (v18+)
+- PostgreSQL running locally or via Docker
+- API Keys for AI services (SST, TTS, LLM)
 
-```sh
-cd my-turborepo
-npx turbo dev
-bun exec turbo dev
-bun exec turbo dev
-```
+### Installation
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+1. Clone the repository:
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-bun exec turbo dev --filter=web
-bun exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-bun exec turbo login
-bun exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-bun exec turbo link
-bun exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+   ```bash
+   git clone [https://github.com/biswarup-naha/Syra-AI.git](https://github.com/biswarup-naha/Syra-AI.git)
+   cd ai-interview-platform
