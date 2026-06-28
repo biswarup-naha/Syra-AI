@@ -1,22 +1,20 @@
-import { Button } from "./components/ui/button";
-import { Input } from "./components/ui/input";
 import "../styles/globals.css"
+import { useState } from "react";
+import Form from "./components/Form";
+import Interview from "./components/Interview";
+import Result from "./components/Result";
+import { Toaster } from "sonner";
 
 export function App() {
+
+  const [page, setPage] = useState<"form" | "interview" | "result">("form");
+
   return (
-    <div className="container h-screen w-screen flex justify-center items-center">
-      <div>
-        
-        <div className="p-4">
-          <Input placeholder="Enter Github URL" />
-        </div>
-        <div className="p-4">
-          <Input placeholder="Enter LinkedIn URL" />
-        </div>
-        <div className="flex justify-center p-4">
-          <Button>Start interview</Button>
-        </div>
-      </div>
+    <div>
+      {page == "form" && <Form />}
+      {page == "interview" && <Interview />}
+      {page == "result" && <Result />}
+      <Toaster position="top-right" />
     </div>
   );
 }
