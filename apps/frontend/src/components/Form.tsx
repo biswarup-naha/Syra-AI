@@ -4,10 +4,12 @@ import { Input } from "../components/ui/input";
 import { toast } from "sonner"
 import axios from "axios";
 import { BACKEND_URL } from "@/lib/config";
+import { useNavigate } from "react-router";
 
 const Form = () => {
     const [github, setGithub] = useState("");
     const [linkedin, setLinkedin] = useState("");
+    const navigate = useNavigate();
 
 
     async function onSubmit() {
@@ -17,7 +19,7 @@ const Form = () => {
         }
 
         try {
-            await axios.post(`${BACKEND_URL}/api/v1/pre-interview`, {
+            const res = await axios.post(`${BACKEND_URL}/api/v1/pre-interview`, {
                 github,
                 linkedin,
             });
@@ -25,6 +27,7 @@ const Form = () => {
             toast.success("Data sent");
             setGithub("");
             setLinkedin("");
+            navigate(`/interview/${res.data.interview.id}`);
         } catch (error) {
             console.error(error);
             toast.error("Failed to send data");
