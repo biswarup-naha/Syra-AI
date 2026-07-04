@@ -39,3 +39,7 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+/generated/prisma
+
+/generated/prisma
