@@ -1,0 +1,80 @@
+name: syra-ai
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: syra-ai-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: syra-ai-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    tty: true
+
+  backend:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+    container_name: syra-ai-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./apps/backend/.env
+    volumes:
+      - ./apps/backend:/app
+      - /app/node_modules
+    command: >
+      sh -c "
+      bun install &&
+      bunx prisma migrate deploy &&
+      bun run dev
+      "
+
+  frontend:
+    build:
+      context: ./apps/frontend
+      dockerfile: Dockerfile
+    container_name: syra-ai-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    env_file:
+      - ./apps/frontend/.env
+    volumes:
+      - ./apps/frontend:/app
+      - /app/node_modules
+    command: >
+      sh -c "
+      bun install &&
+      bun run dev --host 0.0.0.0
+      "
+
+volumes:
+  postgres_data:
+  ollama_data:

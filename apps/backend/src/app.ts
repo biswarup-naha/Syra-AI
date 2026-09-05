@@ -2,7 +2,8 @@ import express from "express";
 import { PreInterviewBody } from "../types";
 import cors from "cors";
 import { scrapeGithub, scrapeLinkedin } from "./utils/scrappers";
-import {prisma} from "./lib/prisma";
+import { prisma } from "./lib/prisma";
+import axios from "axios";
 
 const app = express();
 app.use(express.json());
@@ -45,7 +46,7 @@ app.post("/api/v1/pre-interview", async (req, res) => {
         githubRes = { error: error instanceof Error ? error.message : error };
         linkedinRes = { error: error instanceof Error ? error.message : error };
     }
-    
+
 
     return res.status(200).json({
         message: "received",
@@ -53,6 +54,40 @@ app.post("/api/v1/pre-interview", async (req, res) => {
         // github: githubRes,
         // linkedin: linkedinRes
     })
+});
+
+app.post("/tts", async (req, res) => {
+    try {
+
+        const { text } = req.body;
+
+        const response = await axios.post(
+            process.env.OLLAMA_HOST + "/api/chat",
+            {
+                model: "legraphista/Orpheus",
+
+                messages: [
+                    {
+                        role: "user",
+                        content: text
+                    }
+                ],
+
+                stream: false
+            }
+        );
+
+        res.json(response.data);
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.status(500).json({
+            error: "TTS generation failed"
+        });
+
+    }
 });
 
 export default app;
