@@ -15,6 +15,6 @@ export const scrapeGithub = async (githubUrl: string) => {
 }
 
 export const scrapeLinkedin = async (linkeidnUrl: string) => {
-    
-    return 
+    const linkedinRes = null;
+    return linkedinRes;
 }
