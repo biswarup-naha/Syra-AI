@@ -5,6 +5,7 @@
     "": {
       "name": "backend",
       "dependencies": {
+        "@openrouter/sdk": "^1.2.106",
         "@prisma/adapter-pg": "^7.8.0",
         "@prisma/client": "^7.8.0",
         "@types/express": "^5.0.6",
@@ -38,6 +39,8 @@
     "@hono/node-server": ["@hono/node-server@1.19.11", "", { "peerDependencies": { "hono": "^4" } }, "sha512-dr8/3zEaB+p0D2n/IUrlPF1HZm586qgJNXK1a9fhg/PzdtkK7Ksd5l312tJX2yBuALqDYBlG20QEbayqPyxn+g=="],
 
     "@kurkle/color": ["@kurkle/color@0.3.4", "", {}, "sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w=="],
+
+    "@openrouter/sdk": ["@openrouter/sdk@1.2.106", "", { "dependencies": { "zod": "^3.25.0 || ^4.0.0" } }, "sha512-PONsHVMN1HPocwgfbf0PxWUD0XokjEGvwF7SSyM+0b/8bZK7AFx456Tf9K7bur7UCf8Ex6LtLQa1vaJfyFkAvA=="],
 
     "@playwright/test": ["@playwright/test@1.61.1", "", { "dependencies": { "playwright": "1.61.1" }, "bin": { "playwright": "cli.js" } }, "sha512-8nKv6+0RJSL9FE4jYOEGXnPeM/Hg12qZpmqzZjRh3qM0Y7c3z1mrOTfFLids72RDQYVh9WpLEfR5WdpNX4fkig=="],
 
