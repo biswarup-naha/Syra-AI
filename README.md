@@ -35,13 +35,16 @@ The platform consists of three primary user-facing interfaces, backed by a compl
 
 ### Web Interfaces
 
-* **Talent Portal:** Dynamic role discovery and application gateway.
+- **Talent Portal:** Dynamic role discovery and application gateway.
 - **Recruiter Portal:** Dashboard for evaluating candidate pipeline and interview metrics.
 - **Interview Client:** WebRTC-enabled frontend handling bidirectional, low-latency audio/video streaming.
+
+[![Architecture diagram of biswarup-naha/syra-ai](https://gitdiagram.com/biswarup-naha/syra-ai/diagram.png)](https://gitdiagram.com/biswarup-naha/syra-ai?utm_source=readme&utm_medium=picture)
 
 ### 🛡️ Data & Ingestion (Proxy Layer)
 
 To build comprehensive candidate profiles, the platform interfaces with external networks.
+
 - **External Profile Fetching:** Enriches candidate data by intelligently scraping or requesting public profile data (e.g., LinkedIn, X.com).
 - **Rate Limit Management:** To mitigate strict API limits and IP bans, all outbound enrichment requests are routed through a distributed **Proxy Layer** utilizing residential rotating proxies.
 
@@ -63,17 +66,20 @@ The core engineering challenge of this project is maintaining a **sub-second lat
 ## 🛠️ Tech Stack
 
 **Frontend**
+
 - ![React](https://img.shields.io/badge/react-%2320232a.svg?style=flat&logo=react&logoColor=%2361DAFB) React / Next.js
 - ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=flat&logo=tailwind-css&logoColor=white) Tailwind CSS
 - WebRTC API
 
 **Backend & Infrastructure**
+
 - ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=flat&logo=node.js&logoColor=white) Node.js (Express) 
 - ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=flat&logo=postgresql&logoColor=white) PostgreSQL & Vector DB (for embeddings)
 - WebRTC SFU (LiveKit / Mediasoup)
 - **Proxy Management:** Proxyman / ScrapingBee
 
 **AI / ML Pipeline**
+
 - **SST:** Deepgram / Whisper Streaming
 - **SLM Serving:** vLLM / Ollama
 - **TTS:** ElevenLabs / PlayHT
@@ -84,7 +90,7 @@ The core engineering challenge of this project is maintaining a **sub-second lat
 
 ### Prerequisites
 
-* Node.js (v18+)
+- Node.js (v18+)
 - PostgreSQL running locally or via Docker
 - API Keys for AI services (SST, TTS, LLM)
 
