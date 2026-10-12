@@ -7,6 +7,7 @@ import axios from "axios";
 import { OpenRouter } from "@openrouter/sdk";
 
 const app = express();
+app.use(express.text({ type: ["application/sdp", "text/plain"] }));
 app.use(express.json());
 app.use(cors({
     origin: "http://localhost:3000",
@@ -31,9 +32,8 @@ app.post("/api/v1/pre-interview", async (req, res) => {
     let interview: unknown;
 
     try {
-        githubRes = scrapeGithub(github);
+        githubRes = await scrapeGithub(github);
         linkedinRes = await scrapeLinkedin(linkedin);
-        // console.log(githubRes);
 
         interview = await prisma.interview.create({
             data: {
@@ -57,22 +57,25 @@ app.post("/api/v1/pre-interview", async (req, res) => {
     })
 });
 
-
-app.post("/tts", async (req, res) => {
-    const client = new OpenRouter({
-        apiKey: process.env.OPENROUTER_API_KEY as string,
-        httpReferer: 'localhost',
-        appTitle: 'Syra-AI',
-    });
-
+app.post("/api/v1/session", async (req, res) => {
     try {
         const { text } = req.body;
 
+        if (typeof text !== "string" || !text.trim()) {
+            res.status(400).json({ error: "Text is required" });
+            return;
+        }
+
+        const client = new OpenRouter({
+            apiKey: process.env.OPENROUTER_API_KEY as string,
+            httpReferer: "http://localhost:5173",
+            appTitle: "Syra-AI",
+        });
+
         const stream = await client.tts.createSpeech({
             speechRequest: {
-                model: "deepgram/flux-tts:free",
-                input: text as string,
-                voice: "flux-alexis-en",
+                model: "fish-audio/s2.1-pro-free:free",
+                input: text,
                 responseFormat: "mp3",
             },
             appCategories: "text-to-speech",
@@ -80,32 +83,30 @@ app.post("/tts", async (req, res) => {
 
         const reader = stream.getReader();
         const chunks: Uint8Array[] = [];
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            chunks.push(value);
+
+        try {
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                chunks.push(value);
+            }
+        } finally {
+            reader.releaseLock();
         }
 
-        const totalLength = chunks.reduce((sum, c) => sum + c.length, 0);
-        const buffer = new Uint8Array(totalLength);
-        let offset = 0;
-        for (const chunk of chunks) {
-            buffer.set(chunk, offset);
-            offset += chunk.length;
-        }
+        const audio = Buffer.concat(
+            chunks.map((chunk) => Buffer.from(chunk))
+        );
 
-
-
-        res.send(buffer);
-
-    } catch (err) {
-
-        console.log(err);
+        res.setHeader("Content-Type", "audio/mpeg");
+        res.setHeader("Content-Length", audio.length);
+        res.status(200).send(audio);
+    } catch (error) {
+        console.error("TTS generation failed:", error);
 
         res.status(500).json({
-            error: "TTS generation failed"
+            error: "TTS generation failed",
         });
-
     }
 });
 
